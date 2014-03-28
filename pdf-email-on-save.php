@@ -2,11 +2,11 @@
 /**
  * PDF Email on Save
  *
- * Create a PDF based on the print stylessheet for a given post, page,
+ * Create a PDF based on the print stylesheet for a given post, page,
  * or custom post type when the content is saved. User can select which
  * post types are included and which email to send the PDF to via settings.
  *
- * @package   PDF Email On Save
+ * @package   PDF_Email_on_Save
  * @author    Matt Banks <mjbanks@gmail.com>
  * @license   GPL-2.0+
  * @link      http://mattbanks.me
