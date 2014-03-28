@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name.
+ * PDF Email on Save
  *
  * @package   PDF_Email_Admin
  * @author    Matt Banks <mjbanks@gmail.com>
@@ -10,11 +10,7 @@
  */
 
 /**
- * Plugin class. This class should ideally be used to work with the
- * administrative side of the WordPress site.
- *
- * If you're interested in introducing public-facing
- * functionality, then refer to `class-pdf-email-on-save.php`
+ * PDF Email on Save Admin class
  *
  * @package PDF_Email_Admin
  * @author  Matt Banks <mjbanks@gmail.com>
