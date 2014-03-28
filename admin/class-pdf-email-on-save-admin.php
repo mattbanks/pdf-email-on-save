@@ -44,28 +44,10 @@ class PDF_Email_Admin {
 	private function __construct() {
 
 		/*
-		 * @TODO :
-		 *
-		 * - Uncomment following lines if the admin class should only be available for super admins
-		 */
-		/* if( ! is_super_admin() ) {
-			return;
-		} */
-
-		/*
 		 * Call $plugin_slug from public plugin class.
-		 *
-		 * @TODO:
-		 *
-		 * - Rename "Plugin_Name" to the name of your initial plugin class
-		 *
 		 */
-		$plugin = Plugin_Name::get_instance();
+		$plugin = PDF_Email::get_instance();
 		$this->plugin_slug = $plugin->get_plugin_slug();
-
-		// Load admin style sheet and JavaScript.
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
 		// Add the options page and menu item.
 		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ) );
@@ -75,13 +57,9 @@ class PDF_Email_Admin {
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
 
 		/*
-		 * Define custom functionality.
-		 *
-		 * Read more about actions and filters:
-		 * http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters
+		 * Register settings
 		 */
-		add_action( '@TODO', array( $this, 'action_method_name' ) );
-		add_filter( '@TODO', array( $this, 'filter_method_name' ) );
+		add_action( 'admin_init', array( $this, 'add_settings' ) );
 
 	}
 
@@ -94,69 +72,12 @@ class PDF_Email_Admin {
 	 */
 	public static function get_instance() {
 
-		/*
-		 * @TODO :
-		 *
-		 * - Uncomment following lines if the admin class should only be available for super admins
-		 */
-		/* if( ! is_super_admin() ) {
-			return;
-		} */
-
 		// If the single instance hasn't been set, set it now.
 		if ( null == self::$instance ) {
 			self::$instance = new self;
 		}
 
 		return self::$instance;
-	}
-
-	/**
-	 * Register and enqueue admin-specific style sheet.
-	 *
-	 * @TODO:
-	 *
-	 * - Rename "Plugin_Name" to the name your plugin
-	 *
-	 * @since     1.0.0
-	 *
-	 * @return    null    Return early if no settings page is registered.
-	 */
-	public function enqueue_admin_styles() {
-
-		if ( ! isset( $this->plugin_screen_hook_suffix ) ) {
-			return;
-		}
-
-		$screen = get_current_screen();
-		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
-			wp_enqueue_style( $this->plugin_slug .'-admin-styles', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), Plugin_Name::VERSION );
-		}
-
-	}
-
-	/**
-	 * Register and enqueue admin-specific JavaScript.
-	 *
-	 * @TODO:
-	 *
-	 * - Rename "Plugin_Name" to the name your plugin
-	 *
-	 * @since     1.0.0
-	 *
-	 * @return    null    Return early if no settings page is registered.
-	 */
-	public function enqueue_admin_scripts() {
-
-		if ( ! isset( $this->plugin_screen_hook_suffix ) ) {
-			return;
-		}
-
-		$screen = get_current_screen();
-		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
-			wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), array( 'jquery' ), Plugin_Name::VERSION );
-		}
-
 	}
 
 	/**
@@ -168,21 +89,10 @@ class PDF_Email_Admin {
 
 		/*
 		 * Add a settings page for this plugin to the Settings menu.
-		 *
-		 * NOTE:  Alternative menu locations are available via WordPress administration menu functions.
-		 *
-		 *        Administration Menus: http://codex.wordpress.org/Administration_Menus
-		 *
-		 * @TODO:
-		 *
-		 * - Change 'Page Title' to the title of your plugin admin page
-		 * - Change 'Menu Text' to the text for menu item for the plugin settings page
-		 * - Change 'manage_options' to the capability you see fit
-		 *   For reference: http://codex.wordpress.org/Roles_and_Capabilities
 		 */
 		$this->plugin_screen_hook_suffix = add_options_page(
-			__( 'Page Title', $this->plugin_slug ),
-			__( 'Menu Text', $this->plugin_slug ),
+			__( 'PDF Email on Save', $this->plugin_slug ),
+			__( 'PDF Email on Save', $this->plugin_slug ),
 			'manage_options',
 			$this->plugin_slug,
 			array( $this, 'display_plugin_admin_page' )
@@ -216,29 +126,178 @@ class PDF_Email_Admin {
 	}
 
 	/**
-	 * NOTE:     Actions are points in the execution of a page or process
-	 *           lifecycle that WordPress fires.
+	 * Callback to output content above our settings section fields
 	 *
-	 *           Actions:    http://codex.wordpress.org/Plugin_API#Actions
-	 *           Reference:  http://codex.wordpress.org/Plugin_API/Action_Reference
+	 * @see add_settings()
 	 *
 	 * @since    1.0.0
 	 */
-	public function action_method_name() {
-		// @TODO: Define your action hook callback here
+	public function settings_section_callback() {
+
+		print 'Use the following to customize your settings for PDF Email on Save:';
+
 	}
 
 	/**
-	 * NOTE:     Filters are points of execution in which WordPress modifies data
-	 *           before saving it or sending it to the browser.
+	 * Callback to output the markup of our email address field
 	 *
-	 *           Filters: http://codex.wordpress.org/Plugin_API#Filters
-	 *           Reference:  http://codex.wordpress.org/Plugin_API/Filter_Reference
+	 * @see add_settings()
 	 *
 	 * @since    1.0.0
 	 */
-	public function filter_method_name() {
-		// @TODO: Define your filter hook callback here
+	public function email_address_field_callback() {
+
+		$setting = esc_attr( get_option( 'pdf_email_address' ) );
+
+		if ( false == $setting ) {
+			// the setting was never set
+			$setting = esc_attr( get_option( 'admin_email' ) );
+		}
+
+		echo "<input type='text' name='pdf_email_address' id='pdf_email_address' value='$setting' class='regular-text'>";
+		echo '<p class="description">Enter email address to send PDF when post is saved. For multiple email addresses, separate them with a comma. Default is the WordPress admin email address.</p>';
+
+	}
+
+	/**
+	 * Sanitize our email address settings before they're saved to the database
+	 *
+	 * @param $input
+	 * @uses sanitize_text_field() to sanitize our text field
+	 *
+	 * @since    1.0.0
+	 */
+	public function email_address_sanitize( $input ) {
+
+		if ( ! is_string( $input ) ) {
+			$input = (string) $input;
+		}
+
+		$input = sanitize_text_field( $input );
+
+		return $input;
+
+	}
+
+	/**
+	 * Callback to output the markup of our post types field
+	 *
+	 * @see add_settings()
+	 *
+	 * @since    1.0.0
+	 */
+	public function post_types_field_callback() {
+
+		$post_types = get_option( 'pdf_email_post_types' );
+
+		if ( false == $post_types || ! is_array( $post_types ) ) {
+			// the setting was never set
+			$post_types = array();
+		}
+
+		$all_post_types = get_post_types( array( 'public' => true ) );
+
+		echo '<fieldset>';
+
+		foreach ( $all_post_types as $post_type ) {
+			?>
+
+			<label for="<?php echo $post_type; ?>">
+				<input type="checkbox" name="pdf_email_post_types[<?php echo $post_type; ?>]" id="pdf_email_post_types[<?php echo $post_type; ?>]" value="1" <?php checked( isset( $post_types[$post_type] ) ); ?>>
+				<?php echo ucwords( $post_type ); ?>
+			</label>
+			<br>
+
+			<?php
+		}
+
+		echo '<p class="description">Select field types to generate a PDF and have it emailed when the post is saved.</p>';
+		echo '</fieldset>';
+
+	}
+
+	/**
+	 * Sanitize our post types settings before they're saved to the database
+	 *
+	 * @param $input
+	 * @uses sanitize_key() to sanitize our array keys
+	 *
+	 * @since    1.0.0
+	 */
+	public function post_types_sanitize( $input ) {
+
+		if ( ! is_array( $input ) ) {
+			$input = (array) $input;
+		}
+
+		$all_post_types = get_post_types( array( 'public' => true ) );
+
+		foreach ( $input as $key => $value ) {
+			if ( in_array( $key, $all_post_types) ) {
+				// If it is a current post type
+				$key = sanitize_key( $key );
+			}
+			else {
+				// If it's not a current post type, remove it from the array
+				unset( $input[$key] );
+			}
+		}
+
+		return $input;
+
+	}
+
+	/**
+	 * Register our setting with WordPress' Settings API
+	 *
+	 * @uses register_setting() to register our plugin setting
+	 * @uses add_settings_section() to define our settings section
+	 * @uses add_settings_field() to add a field to our settings section
+	 *
+	 * @since    1.0.0
+	 */
+	public function add_settings() {
+
+		// Register email address setting
+		register_setting(
+			'pdf-email-settings-group',							// $option_group
+			'pdf_email_address',								// $option_name
+			array( $this, 'email_address_sanitize')				// $sanitize_callback
+		);
+
+		// Register post types setting
+		register_setting(
+			'pdf-email-settings-group',							// $option_group
+			'pdf_email_post_types',								// $option_name
+			array( $this, 'post_types_sanitize')				// $sanitize_callback
+		);
+
+		// Add our settings section
+		add_settings_section(
+			'pdf-email-settings-section',						// $id
+			__( 'Plugin Options', $this->plugin_slug ),			// $title
+			array( $this, 'settings_section_callback' ),		// $callback
+			$this->plugin_slug									// $page
+		);
+
+		// Add a field to our settings section for email address
+		add_settings_field(
+			'pdf-email-address',								// $id
+			__( 'Email Address', $this->plugin_slug ),			// $title
+			array( $this, 'email_address_field_callback' ),		// $callback
+			$this->plugin_slug,									// $page
+			'pdf-email-settings-section'						// $section
+		);
+
+		// Add a field to our settings section for post type selection
+		add_settings_field(
+			'pdf-email-post-types',								// $id
+			__( 'Post Types', $this->plugin_slug ),				// $title
+			array( $this, 'post_types_field_callback' ),		// $callback
+			$this->plugin_slug,									// $page
+			'pdf-email-settings-section'						// $section
+		);
+
 	}
 
 }

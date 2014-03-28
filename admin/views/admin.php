@@ -5,7 +5,7 @@
  * This includes the header, options, and other information that should provide
  * The User Interface to the end user.
  *
- * @package   Plugin_Name
+ * @package   PDF_Email_on_save
  * @author    Matt Banks <mjbanks@gmail.com>
  * @license   GPL-2.0+
  * @link      http://mattbanks.me
@@ -17,6 +17,10 @@
 
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 
-	<!-- @TODO: Provide markup for your options page here. -->
+	<form action="options.php" method="POST">
+		<?php settings_fields( 'pdf-email-settings-group' ); ?>
+		<?php do_settings_sections( $this->plugin_slug ); ?>
+		<?php submit_button(); ?>
+	</form>
 
 </div>
