@@ -66,7 +66,7 @@ class PDF_Email {
 		/*
 		 * Trigger PDF creation and emailing when appropriate posts are saved
 		 */
-		add_action( 'save_post', array( $this, 'create_pdf' ) );
+		add_action( 'save_post', array( $this, 'generate' ) );
 
 	}
 
@@ -249,25 +249,30 @@ class PDF_Email {
 	}
 
 	/**
-	 * Get post types saved in 'mb_pdf_email_post_types' option
+	 * Get post types saved in 'pdf_email_post_types' option
 	 *
 	 * @since    1.0.0
 	 *
 	 * @return   array    Array of post types
 	 */
 	private function get_post_types() {
-		// @TODO: Get post types saved in 'mb_pdf_email_post_types' option
+
+		return get_option( 'pdf_email_post_types' );
+
 	}
 
 	/**
-	 * Get the email address to use saved in 'mb_pdf_email_address' option
+	 * Get the email address to use saved in 'pdf_email_address' option
 	 *
 	 * @since    1.0.0
 	 *
-	 * @return   string    Email addresses for mailing PDF
+	 * @return   string    Email addresses for mailing PDF. If 'pdf_email_address'
+	 *                     is not set, return 'admin_email'
 	 */
 	private function get_email_address() {
-		// @TODO: Get the email address to use saved in 'mb_pdf_email_address' option
+
+		return get_option( 'pdf_email_address' );
+
 	}
 
 	/**
@@ -275,7 +280,7 @@ class PDF_Email {
 	 *
 	 * @since    1.0.0
 	 */
-	private function send_email() {
+	private function send_email( $email_address, $pdf ) {
 		// @TODO: Send email
 	}
 
@@ -285,13 +290,89 @@ class PDF_Email {
 	 * @since    1.0.0
 	 */
 	public function create_pdf( $post_id ) {
-		// @TODO: Get post types saved in 'mb_pdf_email_post_types' option
 
-		// @TODO: Create the PDF
+		// Include mPDF Class
+		include_once( plugins_url( 'includes/mpdf/mpdf.php' ) );
 
-		// @TODO: Get the email address to use saved in 'mb_pdf_email_address' option
+		// Create new mPDF Document
+		$mpdf = new mPDF();
 
-		// @TODO: Send email
+		// Beginning Buffer to save PHP variables and HTML tags
+		ob_start();
+
+		$post = get_post( $post_id );
+
+		echo "<h1>Today's Specials</h1>";
+		echo '<h2>' . date( 'n/j/y' ) . '</h2>';
+
+		echo '<h3>Soups</h3>';
+		echo $cfs->get( 'specials_soups', $post_id );
+
+		echo '<h3>Sandwiches</h3>';
+		echo '<p>' . $cfs->get( 'sandwich_special_1', $post_id ).  '</p>';
+		echo '<p>' . $cfs->get( 'sandwich_special_2', $post_id ).  '</p>';
+		echo '<p>' . $cfs->get( 'sandwich_special_3', $post_id ).  '</p>';
+
+		echo '<h3>Prepared Food</h3>';
+		echo $cfs->get( 'specials_prepared_food', $post_id );
+
+		// Get contents, end buffer
+		$html = ob_get_contents();
+		ob_end_clean();
+
+		// Encode contents as UTF-8
+		$mpdf->WriteHTML( utf8_encode( $html ) );
+
+		$content = $mpdf->Output( '', 'S' );
+
+		$content = chunk_split( base64_encode( $content ) );
+
+		return $content;
+
+	}
+
+	/**
+	 * Create PDF from appropriate post type
+	 *
+	 * @since    1.0.0
+	 */
+	public function generate( $post_id ) {
+
+		// bail out if running an autosave, ajax, cron, or revision
+		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return $post->ID;
+		}
+
+		if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			return $post->ID;
+		}
+
+		if( defined( 'DOING_CRON' ) && DOING_CRON ) {
+			return $post->ID;
+		}
+
+		if( wp_is_post_revision( $post_id ) ) {
+			return $post->ID;
+		}
+
+		// make sure the user is authorized
+		if( ! current_user_can( 'edit_post', $post->ID ) ) {
+			return $post->ID;
+		}
+
+		// Get post types saved in 'pdf_email_post_types' option
+		$post_types = self::get_post_types();
+
+		// Get the email address to use saved in 'pdf_email_address' option
+		$email = self::get_email_address();
+
+		// Create the PDF
+		$pdf = self::create_pdf( $post_id );
+
+		// Send email
+		self::send_email( $email, $pdf );
+
+		return $post->ID;
 	}
 
 }
