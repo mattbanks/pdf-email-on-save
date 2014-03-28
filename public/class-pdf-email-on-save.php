@@ -6,7 +6,7 @@
  * @author    Matt Banks <mjbanks@gmail.com>
  * @license   GPL-2.0+
  * @link      http://mattbanks.me
- * @copyright 2014 Your Name or Company Name
+ * @copyright 2014 Matt Banks
  */
 
 /**
@@ -16,12 +16,10 @@
  * If you're interested in introducing administrative or dashboard
  * functionality, then refer to `class-pdf-email-on-save-admin.php`
  *
- * @TODO: Rename this class to a proper name for your plugin.
- *
- * @package Plugin_Name
+ * @package PDF_Email
  * @author  Matt Banks <mjbanks@gmail.com>
  */
-class Plugin_Name {
+class PDF_Email {
 
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.

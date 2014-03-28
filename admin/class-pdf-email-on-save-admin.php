@@ -2,11 +2,11 @@
 /**
  * Plugin Name.
  *
- * @package   Plugin_Name_Admin
+ * @package   PDF_Email_Admin
  * @author    Matt Banks <mjbanks@gmail.com>
  * @license   GPL-2.0+
  * @link      http://mattbanks.me
- * @copyright 2014 Your Name or Company Name
+ * @copyright 2014 Matt Banks
  */
 
 /**
@@ -16,12 +16,10 @@
  * If you're interested in introducing public-facing
  * functionality, then refer to `class-pdf-email-on-save.php`
  *
- * @TODO: Rename this class to a proper name for your plugin.
- *
- * @package Plugin_Name_Admin
+ * @package PDF_Email_Admin
  * @author  Matt Banks <mjbanks@gmail.com>
  */
-class Plugin_Name_Admin {
+class PDF_Email_Admin {
 
 	/**
 	 * Instance of this class.
