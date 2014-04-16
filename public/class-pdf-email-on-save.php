@@ -292,7 +292,7 @@ class PDF_Email {
 	public function create_pdf( $post_id ) {
 
 		// Include mPDF Class
-		include_once( plugins_url( 'includes/mpdf/mpdf.php' ) );
+		include_once( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/mpdf/mpdf.php' );
 
 		// Create new mPDF Document
 		$mpdf = new mPDF();
@@ -301,6 +301,8 @@ class PDF_Email {
 		ob_start();
 
 		$post = get_post( $post_id );
+
+        global $cfs;
 
 		echo "<h1>Today's Specials</h1>";
 		echo '<h2>' . date( 'n/j/y' ) . '</h2>';
@@ -335,29 +337,31 @@ class PDF_Email {
 	 * Create PDF from appropriate post type
 	 *
 	 * @since    1.0.0
+     *
+     * @param    int       $post_id The ID of the post.
 	 */
 	public function generate( $post_id ) {
 
 		// bail out if running an autosave, ajax, cron, or revision
-		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return $post->ID;
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
 		}
 
-		if( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-			return $post->ID;
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			return;
 		}
 
-		if( defined( 'DOING_CRON' ) && DOING_CRON ) {
-			return $post->ID;
+		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+			return;
 		}
 
-		if( wp_is_post_revision( $post_id ) ) {
-			return $post->ID;
+		if ( wp_is_post_revision( $post_id ) ) {
+			return;
 		}
 
 		// make sure the user is authorized
-		if( ! current_user_can( 'edit_post', $post->ID ) ) {
-			return $post->ID;
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
 		}
 
 		// Get post types saved in 'pdf_email_post_types' option
@@ -366,13 +370,25 @@ class PDF_Email {
 		// Get the email address to use saved in 'pdf_email_address' option
 		$email = self::get_email_address();
 
-		// Create the PDF
-		$pdf = self::create_pdf( $post_id );
+        // If the post type is in the saved $post_types array, create and email the pdf
+        if ( isset( $_POST['post_type'] ) ) {
 
-		// Send email
-		self::send_email( $email, $pdf );
+            if ( ! array_key_exists($_POST['post_type'], $post_types) ) {
+                return;
+            }
 
-		return $post->ID;
+            // Make sure this is only when a post is published
+            if ( isset( $_POST['post_status'] ) && 'publish' == $_POST['post_status'] ) {
+
+                // Create the PDF
+                $pdf = self::create_pdf( $post_id );
+
+                // Send email
+                self::send_email( $email, $pdf );
+            }
+
+        }
+
 	}
 
 }
