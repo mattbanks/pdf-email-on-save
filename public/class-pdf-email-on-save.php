@@ -300,14 +300,20 @@ class PDF_Email {
 
 		// Set the subject
 		$subject = $site_name . ' - PDF of ' . $post->post_title;
+
+		// Create a filter to allow users to change the subject
 		$subject = apply_filters( 'pdf_email_on_save_subject', $subject );
 
 		// Set the message
 		$message = 'Attached is a PDF of your post, ' . $post->post_title;
+
+		// Create a filter to allow users to change the message
 		$message = apply_filters( 'pdf_email_on_save_message', $message );
 
 		// Set the PDF file name
 		$filename = $post->post_name . '_' . get_the_date( 'd-m-Y_H-i' ) . '.pdf';
+
+		// Create a filter to allow users to change the filename
 		$filename = apply_filters( 'pdf_email_on_save_filename', $filename );
 
 		// Set headers
