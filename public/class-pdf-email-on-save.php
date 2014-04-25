@@ -306,39 +306,46 @@ class PDF_Email {
 		// Create new mPDF Document
 		$mpdf = new mPDF();
 
-		// Beginning Buffer to save PHP variables and HTML tags
-		ob_start();
-
+		// Get the post
 		$post = get_post( $post_id );
 
-        global $cfs;
+        // Setup our header
+        $header = '<h1>' . get_bloginfo( 'name' ) . '</h1>';
+        $header .= '<h1>' . get_bloginfo( 'description' ) . '</h1>';
 
-		echo "<h1>Today's Specials</h1>";
-		echo '<h2>' . date( 'n/j/y' ) . '</h2>';
+        // Create a filter to allow users to change the header
+        $header = apply_filters( 'pdf_email_on_save_header', $header );
 
-		echo '<h3>Soups</h3>';
-		echo $cfs->get( 'specials_soups', $post_id );
+        // Setup our content
+        $content = '<h2>' . get_the_title() . '</h2>';
+        $content .= '<p>' . get_the_date( 'l, F j, Y' ) . '</p>';
+        $content .= wpautop( $post->post_content );
 
-		echo '<h3>Sandwiches</h3>';
-		echo '<p>' . $cfs->get( 'sandwich_special_1', $post_id ).  '</p>';
-		echo '<p>' . $cfs->get( 'sandwich_special_2', $post_id ).  '</p>';
-		echo '<p>' . $cfs->get( 'sandwich_special_3', $post_id ).  '</p>';
+        // Create a filter to allow users to change the content
+        $content = apply_filters( 'pdf_email_on_save_content', $content );
 
-		echo '<h3>Prepared Food</h3>';
-		echo $cfs->get( 'specials_prepared_food', $post_id );
+        // Setup our footer
+        $footer = '<hr>';
+        $footer .= 'Link to page: ';
+        $footer .= '<p>' . get_the_permalink( $post_id ) . '</p>';
 
-		// Get contents, end buffer
-		$html = ob_get_contents();
-		ob_end_clean();
+        // Create a filter to allow users to change the footer
+        $footer = apply_filters( 'pdf_email_on_save_footer', $footer );
+
+        // Merge it all into the HTML
+        $html = $header . $content . $footer;
+
+        // Create a filter to allow users to change the html
+        $html = apply_filters( 'pdf_email_on_save_html', $html );
 
 		// Encode contents as UTF-8
 		$mpdf->WriteHTML( utf8_encode( $html ) );
 
-		$content = $mpdf->Output( '', 'S' );
+		$full_content = $mpdf->Output( '', 'S' );
 
-		$content = chunk_split( base64_encode( $content ) );
+        $full_content = chunk_split( base64_encode( $full_content ) );
 
-		return $content;
+		return $full_content;
 
 	}
 
