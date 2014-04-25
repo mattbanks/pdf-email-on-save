@@ -1,5 +1,5 @@
-# Copyright (C) 2013 TODO
-# This file is distributed under the same license as the TODO package.
+# Copyright (C) 2014
+# This file is distributed under the same license as the PDF Email on Save plugin.
 msgid ""
 msgstr ""
 "Project-Id-Version: TODO 1.0.0\n"
