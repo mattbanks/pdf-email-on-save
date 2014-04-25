@@ -340,7 +340,7 @@ class PDF_Email {
         // Setup our content
         $content = '<h2>' . get_the_title() . '</h2>';
         $content .= '<p>' . get_the_date( 'l, F j, Y' ) . '</p>';
-        $content .= wpautop( $post->post_content );
+        $content .= apply_filters( 'the_content', $post->post_content );
 
         // Create a filter to allow users to change the content
         $content = apply_filters( 'pdf_email_on_save_content', $content );
