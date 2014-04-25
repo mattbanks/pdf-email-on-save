@@ -271,7 +271,16 @@ class PDF_Email {
 	 */
 	private function get_email_address() {
 
-		return get_option( 'pdf_email_address' );
+        $email_option = get_option( 'pdf_email_address' );
+
+        if ( false != $email_option ) {
+            $email = $email_option;
+        }
+        else { // no option was set, use
+            $email = get_bloginfo( 'admin_email' );
+        }
+
+		return $email;
 
 	}
 
