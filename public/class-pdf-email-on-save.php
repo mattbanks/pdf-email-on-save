@@ -271,14 +271,14 @@ class PDF_Email {
 	 */
 	private function get_email_address() {
 
-        $email_option = get_option( 'pdf_email_address' );
+		$email_option = get_option( 'pdf_email_address' );
 
-        if ( false != $email_option ) {
-            $email = $email_option;
-        }
-        else { // no option was set, use
-            $email = get_bloginfo( 'admin_email' );
-        }
+		if ( false != $email_option ) {
+			$email = $email_option;
+		}
+		else { // no option was set, use
+			$email = get_bloginfo( 'admin_email' );
+		}
 
 		return $email;
 
@@ -291,48 +291,48 @@ class PDF_Email {
 	 */
 	private function send_email( $email_address, $pdf, $post_id ) {
 
-        // Get the post
-        $post = get_post( $post_id );
+		// Get the post
+		$post = get_post( $post_id );
 
-        // Get site name and email for header
-        $site_name =  get_bloginfo( 'name' );
-        $admin_email =  get_bloginfo( 'admin_email' );
+		// Get site name and email for header
+		$site_name =  get_bloginfo( 'name' );
+		$admin_email =  get_bloginfo( 'admin_email' );
 
-        // Set the subject
-        $subject = $site_name . ' - PDF of ' . $post->post_title;
-        $subject = apply_filters( 'pdf_email_on_save_subject', $subject );
+		// Set the subject
+		$subject = $site_name . ' - PDF of ' . $post->post_title;
+		$subject = apply_filters( 'pdf_email_on_save_subject', $subject );
 
-        // Set the message
-        $message = 'Attached is a PDF of your post, ' . $post->post_title;
-        $message = apply_filters( 'pdf_email_on_save_message', $message );
+		// Set the message
+		$message = 'Attached is a PDF of your post, ' . $post->post_title;
+		$message = apply_filters( 'pdf_email_on_save_message', $message );
 
-        // Set the PDF file name
-        $filename = $post->post_name . '_' . get_the_date( 'd-m-Y_H-i' ) . '.pdf';
-        $filename = apply_filters( 'pdf_email_on_save_filename', $filename );
+		// Set the PDF file name
+		$filename = $post->post_name . '_' . get_the_date( 'd-m-Y_H-i' ) . '.pdf';
+		$filename = apply_filters( 'pdf_email_on_save_filename', $filename );
 
-        // Set headers
-        $uid = md5( uniqid( time() ) );
+		// Set headers
+		$uid = md5( uniqid( time() ) );
 
-        $header = 'From: ' . $site_name . ' <' . $admin_email . '>' . "\r\n";
-        $header .= "Reply-To: " . $admin_email . "\r\n";
-        $header .= "MIME-Version: 1.0\r\n";
-        $header .= "Content-Type: multipart/mixed; boundary=\"".$uid."\"\r\n\r\n";
-        $header .= "This is a multi-part message in MIME format.\r\n";
-        $header .= "--".$uid."\r\n";
-        $header .= "Content-type:text/plain; charset=iso-8859-1\r\n";
-        $header .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
-        $header .= $message."\r\n\r\n";
-        $header .= "--".$uid."\r\n";
-        $header .= "Content-Type: application/pdf; name=\"".$filename."\"\r\n";
-        $header .= "Content-Transfer-Encoding: base64\r\n";
-        $header .= "Content-Disposition: attachment; filename=\"".$filename."\"\r\n\r\n";
-        $header .= $pdf."\r\n\r\n";
-        $header .= "--".$uid."--";
+		$header = 'From: ' . $site_name . ' <' . $admin_email . '>' . "\r\n";
+		$header .= "Reply-To: " . $admin_email . "\r\n";
+		$header .= "MIME-Version: 1.0\r\n";
+		$header .= "Content-Type: multipart/mixed; boundary=\"".$uid."\"\r\n\r\n";
+		$header .= "This is a multi-part message in MIME format.\r\n";
+		$header .= "--".$uid."\r\n";
+		$header .= "Content-type:text/plain; charset=iso-8859-1\r\n";
+		$header .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+		$header .= $message."\r\n\r\n";
+		$header .= "--".$uid."\r\n";
+		$header .= "Content-Type: application/pdf; name=\"".$filename."\"\r\n";
+		$header .= "Content-Transfer-Encoding: base64\r\n";
+		$header .= "Content-Disposition: attachment; filename=\"".$filename."\"\r\n\r\n";
+		$header .= $pdf."\r\n\r\n";
+		$header .= "--".$uid."--";
 
-        // Send the email
-        $is_sent = mail( $email_address, $subject, "", $header );
+		// Send the email
+		$is_sent = mail( $email_address, $subject, "", $header );
 
-        // @TODO error handling if mail didn't send
+		// @TODO error handling if mail didn't send
 
 	}
 
@@ -352,44 +352,44 @@ class PDF_Email {
 		// Get the post
 		$post = get_post( $post_id );
 
-        // Setup our header
-        $header = '<h1>' . get_bloginfo( 'name' ) . '</h1>';
-        $header .= '<h1>' . get_bloginfo( 'description' ) . '</h1>';
-        $header .= '<hr>';
+		// Setup our header
+		$header = '<h1>' . get_bloginfo( 'name' ) . '</h1>';
+		$header .= '<h1>' . get_bloginfo( 'description' ) . '</h1>';
+		$header .= '<hr>';
 
-        // Create a filter to allow users to change the header
-        $header = apply_filters( 'pdf_email_on_save_header', $header );
+		// Create a filter to allow users to change the header
+		$header = apply_filters( 'pdf_email_on_save_header', $header );
 
-        // Setup our content
-        $content = '<h2>' . get_the_title() . '</h2>';
-        $content .= '<p>' . get_the_date( 'l, F j, Y' ) . '</p>';
-        $content .= apply_filters( 'the_content', $post->post_content );
+		// Setup our content
+		$content = '<h2>' . get_the_title() . '</h2>';
+		$content .= '<p>' . get_the_date( 'l, F j, Y' ) . '</p>';
+		$content .= apply_filters( 'the_content', $post->post_content );
 
-        // Create a filter to allow users to change the content
-        $content = apply_filters( 'pdf_email_on_save_content', $content );
+		// Create a filter to allow users to change the content
+		$content = apply_filters( 'pdf_email_on_save_content', $content );
 
-        // Setup our footer
-        $footer = '<hr>';
-        $footer .= 'Link to page: ';
-        $footer .= '<p>' . get_the_permalink( $post_id ) . '</p>';
+		// Setup our footer
+		$footer = '<hr>';
+		$footer .= 'Link to page: ';
+		$footer .= '<p>' . get_the_permalink( $post_id ) . '</p>';
 
-        // Create a filter to allow users to change the footer
-        $footer = apply_filters( 'pdf_email_on_save_footer', $footer );
+		// Create a filter to allow users to change the footer
+		$footer = apply_filters( 'pdf_email_on_save_footer', $footer );
 
-        // Merge it all into the HTML
-        $html = $header . $content . $footer;
+		// Merge it all into the HTML
+		$html = $header . $content . $footer;
 
-        // Create a filter to allow users to change the html
-        $html = apply_filters( 'pdf_email_on_save_html', $html );
+		// Create a filter to allow users to change the html
+		$html = apply_filters( 'pdf_email_on_save_html', $html );
 
 		// Encode contents as UTF-8
 		$mpdf->WriteHTML( utf8_encode( $html ) );
 
 		$full_content = $mpdf->Output( '', 'S' );
 
-        $full_content = chunk_split( base64_encode( $full_content ) );
+		$full_content = chunk_split( base64_encode( $full_content ) );
 
-        return $full_content;
+		return $full_content;
 
 	}
 
@@ -397,8 +397,8 @@ class PDF_Email {
 	 * Create PDF from appropriate post type
 	 *
 	 * @since    1.0.0
-     *
-     * @param    int       $post_id The ID of the post.
+	 *
+	 * @param    int       $post_id The ID of the post.
 	 */
 	public function generate( $post_id ) {
 
@@ -430,25 +430,25 @@ class PDF_Email {
 		// Get the email address to use saved in 'pdf_email_address' option
 		$email = self::get_email_address();
 
-        // If the post type is in the saved $post_types array, create and email the pdf
-        if ( isset( $_POST['post_type'] ) ) {
+		// If the post type is in the saved $post_types array, create and email the pdf
+		if ( isset( $_POST['post_type'] ) ) {
 
-            if ( ! array_key_exists($_POST['post_type'], $post_types) ) {
-                return;
-            }
+			if ( ! array_key_exists($_POST['post_type'], $post_types) ) {
+				return;
+			}
 
-            // Make sure this is only when a post is published
-            if ( isset( $_POST['post_status'] ) && 'publish' == $_POST['post_status'] ) {
+			// Make sure this is only when a post is published
+			if ( isset( $_POST['post_status'] ) && 'publish' == $_POST['post_status'] ) {
 
-                // Create the PDF and send the email
-                $pdf = self::create_pdf( $post_id );
+				// Create the PDF and send the email
+				$pdf = self::create_pdf( $post_id );
 
-                // Send email
-                self::send_email( $email, $pdf, $post_id );
+				// Send email
+				self::send_email( $email, $pdf, $post_id );
 
-            }
+			}
 
-        }
+		}
 
 	}
 
