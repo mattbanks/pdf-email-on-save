@@ -290,7 +290,28 @@ class PDF_Email {
 	 * @since    1.0.0
 	 */
 	private function send_email( $email_address, $pdf ) {
-		// @TODO: Send email
+
+        // Set the PDF as the attachment
+        $attachments = $pdf;
+
+        // Get site name and email for header
+        $site_name =  get_bloginfo( 'name' );
+        $admin_email =  get_bloginfo( 'admin_email' );
+
+        // Set from name and email address
+        $headers = 'From:' . $site_name . ' <' . $admin_email . '>' . "\r\n";
+
+        // Set the subject
+        $subject = 'PDF Email - ' . $site_name;
+
+        // Set the message
+        $message = 'Attached is a PDF of your post!';
+
+        // Send the email
+        if ( ! wp_mail( $email_address, $subject, $message, $headers, $attachments ) ) {
+           // @TODO display error message
+        }
+
 	}
 
 	/**
