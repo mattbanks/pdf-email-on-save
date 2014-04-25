@@ -289,28 +289,50 @@ class PDF_Email {
 	 *
 	 * @since    1.0.0
 	 */
-	private function send_email( $email_address, $pdf ) {
+	private function send_email( $email_address, $pdf, $post_id ) {
 
-        // Set the PDF as the attachment
-        $attachments = $pdf;
+        // Get the post
+        $post = get_post( $post_id );
 
         // Get site name and email for header
         $site_name =  get_bloginfo( 'name' );
         $admin_email =  get_bloginfo( 'admin_email' );
 
-        // Set from name and email address
-        $headers = 'From:' . $site_name . ' <' . $admin_email . '>' . "\r\n";
-
         // Set the subject
-        $subject = 'PDF Email - ' . $site_name;
+        $subject = $site_name . ' - PDF of ' . $post->post_title;
+        $subject = apply_filters( 'pdf_email_on_save_subject', $subject );
 
         // Set the message
-        $message = 'Attached is a PDF of your post!';
+        $message = 'Attached is a PDF of your post, ' . $post->post_title;
+        $message = apply_filters( 'pdf_email_on_save_message', $message );
+
+        // Set the PDF file name
+        $filename = $post->post_name . '_' . get_the_date( 'd-m-Y_H-i' ) . '.pdf';
+        $filename = apply_filters( 'pdf_email_on_save_filename', $filename );
+
+        // Set headers
+        $uid = md5( uniqid( time() ) );
+
+        $header = 'From: ' . $site_name . ' <' . $admin_email . '>' . "\r\n";
+        $header .= "Reply-To: " . $admin_email . "\r\n";
+        $header .= "MIME-Version: 1.0\r\n";
+        $header .= "Content-Type: multipart/mixed; boundary=\"".$uid."\"\r\n\r\n";
+        $header .= "This is a multi-part message in MIME format.\r\n";
+        $header .= "--".$uid."\r\n";
+        $header .= "Content-type:text/plain; charset=iso-8859-1\r\n";
+        $header .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+        $header .= $message."\r\n\r\n";
+        $header .= "--".$uid."\r\n";
+        $header .= "Content-Type: application/pdf; name=\"".$filename."\"\r\n";
+        $header .= "Content-Transfer-Encoding: base64\r\n";
+        $header .= "Content-Disposition: attachment; filename=\"".$filename."\"\r\n\r\n";
+        $header .= $pdf."\r\n\r\n";
+        $header .= "--".$uid."--";
 
         // Send the email
-        if ( ! wp_mail( $email_address, $subject, $message, $headers, $attachments ) ) {
-           // @TODO display error message
-        }
+        $is_sent = mail( $email_address, $subject, "", $header );
+
+        // @TODO error handling if mail didn't send
 
 	}
 
@@ -333,6 +355,7 @@ class PDF_Email {
         // Setup our header
         $header = '<h1>' . get_bloginfo( 'name' ) . '</h1>';
         $header .= '<h1>' . get_bloginfo( 'description' ) . '</h1>';
+        $header .= '<hr>';
 
         // Create a filter to allow users to change the header
         $header = apply_filters( 'pdf_email_on_save_header', $header );
@@ -366,7 +389,7 @@ class PDF_Email {
 
         $full_content = chunk_split( base64_encode( $full_content ) );
 
-		return $full_content;
+        return $full_content;
 
 	}
 
@@ -417,11 +440,12 @@ class PDF_Email {
             // Make sure this is only when a post is published
             if ( isset( $_POST['post_status'] ) && 'publish' == $_POST['post_status'] ) {
 
-                // Create the PDF
+                // Create the PDF and send the email
                 $pdf = self::create_pdf( $post_id );
 
                 // Send email
-                self::send_email( $email, $pdf );
+                self::send_email( $email, $pdf, $post_id );
+
             }
 
         }
