@@ -284,6 +284,36 @@ class PDF_Email {
 
 	}
 
+    /**
+     * Create admin notice to inform user of success
+     *
+     * @since    1.0.0
+     */
+    private function success_notice() {
+
+        ?>
+        <div class="updated">
+            <p><?php _e( 'PDF send by email successfully', $this->$plugin_slug ); ?></p>
+        </div>
+        <?php
+
+    }
+
+    /**
+     * Create admin notice to inform user of error
+     *
+     * @since    1.0.0
+     */
+    private function error_notice() {
+
+        ?>
+        <div class="error">
+            <p><?php _e( 'Oops! Something went wrong. PDF was not sent by email.', $this->$plugin_slug ); ?></p>
+        </div>
+        <?php
+
+    }
+
 	/**
 	 * Email PDF to user
 	 *
@@ -335,10 +365,8 @@ class PDF_Email {
 		$header .= $pdf."\r\n\r\n";
 		$header .= "--".$uid."--";
 
-		// Send the email
-		$is_sent = mail( $email_address, $subject, "", $header );
-
-		// @TODO error handling if mail didn't send
+		// Send the email, return BOOL
+        return mail( $email_address, $subject, "", $header );
 
 	}
 
@@ -450,7 +478,9 @@ class PDF_Email {
 				$pdf = self::create_pdf( $post_id );
 
 				// Send email
-				self::send_email( $email, $pdf, $post_id );
+				$email_status = self::send_email( $email, $pdf, $post_id );
+
+               // @TODO create admin notices
 
 			}
 
