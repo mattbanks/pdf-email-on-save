@@ -68,6 +68,9 @@ class PDF_Email {
 		 */
 		add_action( 'save_post', array( $this, 'generate' ) );
 
+		// Add an admin notice if PDF generation and sending just took place
+		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+
 	}
 
 	/**
@@ -480,12 +483,56 @@ class PDF_Email {
 				// Send email
 				$email_status = self::send_email( $email, $pdf, $post_id );
 
-               // @TODO create admin notices
-
+				// Flag whether PDF generation and email delivery
+				if( ! empty( $pdf ) && ! empty( $email_status ) ) {
+					// looks to be all good
+					add_postmeta( $post_id, '_pdf_email_on_save_status', 'success' );
+				} else {
+					// something went wrong
+					add_postmeta( $post_id, '_pdf_email_on_save_status', 'fail' );
+				}
 			}
 
 		}
 
+	}
+
+	/**
+	 * Output applicable admin notice after PDF generation and email delivery
+	 *
+	 * @since    1.0.0
+	 */
+	function admin_notices() {
+
+		// Triggered by being on the post edit screen and there being a post ID to work with
+		$screen = get_current_screen();
+		if( 'post' === $screen->base || ! isset( $_GET['post'] ) ) {
+			return;
+		}
+
+		// Look for our postmeta breadcrumb
+		$post_id = absint( $_GET['post'] );
+		$status = get_post_meta( $post_id, '_pdf_email_on_save_status', true );
+
+		// Clean up (and prevent false positive checks on subsequent page loads)
+		if ( $status ) {
+			delete_post_meta( $post_id, '_pdf_email_on_save_status' );
+		}
+
+		// Output the appropriate admin notice
+		if ( 'success' == $status ) {
+			?>
+			<div class="updated">
+				<p><?php _e( '<strong>SUCCESS</strong> Success!', 'pdf-email-on-save-locale' ); ?></p>
+			</div>
+			<?php
+		} elseif ( 'fail' == $status ) {
+			?>
+			<div class="error">
+				<p><?php _e( '<strong>ERROR</strong> Error!', 'pdf-email-on-save-locale' ); ?></p>
+			</div>
+			<?php
+		}
 	}
 
 }
