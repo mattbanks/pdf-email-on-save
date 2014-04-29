@@ -477,9 +477,11 @@ class PDF_Email {
 				// Create the PDF and send the email
 				$pdf = self::create_pdf( $post_id );
 
-				// Send email
-				$email_status = self::send_email( $email, $pdf, $post_id );
-
+				// Send email if PDF exists
+                if ( $pdf ) {
+                    $email_status = self::send_email( $email, $pdf, $post_id );
+                }
+				
                // @TODO create admin notices
 
 			}
