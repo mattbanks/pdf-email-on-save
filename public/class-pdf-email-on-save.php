@@ -287,36 +287,6 @@ class PDF_Email {
 
 	}
 
-    /**
-     * Create admin notice to inform user of success
-     *
-     * @since    1.0.0
-     */
-    private function success_notice() {
-
-        ?>
-        <div class="updated">
-            <p><?php _e( 'PDF send by email successfully', $this->$plugin_slug ); ?></p>
-        </div>
-        <?php
-
-    }
-
-    /**
-     * Create admin notice to inform user of error
-     *
-     * @since    1.0.0
-     */
-    private function error_notice() {
-
-        ?>
-        <div class="error">
-            <p><?php _e( 'Oops! Something went wrong. PDF was not sent by email.', $this->$plugin_slug ); ?></p>
-        </div>
-        <?php
-
-    }
-
 	/**
 	 * Email PDF to user
 	 *
@@ -369,7 +339,7 @@ class PDF_Email {
 		$header .= "--".$uid."--";
 
 		// Send the email, return BOOL
-        return mail( $email_address, $subject, "", $header );
+		return mail( $email_address, $subject, "", $header );
 
 	}
 
@@ -481,11 +451,9 @@ class PDF_Email {
 				$pdf = self::create_pdf( $post_id );
 
 				// Send email if PDF exists
-                if ( $pdf ) {
-                    $email_status = self::send_email( $email, $pdf, $post_id );
-                }
-				
-               // @TODO create admin notices
+				if ( ! empty( $pdf ) ) {
+					$email_status = self::send_email( $email, $pdf, $post_id );
+				}
 
 				// Flag whether PDF generation and email delivery
 				if( ! empty( $pdf ) && ! empty( $email_status ) ) {
@@ -527,13 +495,13 @@ class PDF_Email {
 		if ( 'success' == $status ) {
 			?>
 			<div class="updated">
-				<p><?php _e( '<strong>SUCCESS</strong> Success!', 'pdf-email-on-save-locale' ); ?></p>
+				<p><?php _e( 'PDF send by email successfully', $this->$plugin_slug ); ?></p>
 			</div>
 			<?php
 		} elseif ( 'fail' == $status ) {
 			?>
 			<div class="error">
-				<p><?php _e( '<strong>ERROR</strong> Error!', 'pdf-email-on-save-locale' ); ?></p>
+				<p><?php _e( 'Oops! Something went wrong. PDF was not sent by email.', $this->$plugin_slug ); ?></p>
 			</div>
 			<?php
 		}
