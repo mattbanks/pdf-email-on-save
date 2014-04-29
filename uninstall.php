@@ -2,7 +2,7 @@
 /**
  * Fired when the plugin is uninstalled.
  *
- * @package   Plugin_Name
+ * @package   PDF_Email_on_Save
  * @author    Matt Banks <mjbanks@gmail.com>
  * @license   GPL-2.0+
  * @link      http://mattbanks.me
