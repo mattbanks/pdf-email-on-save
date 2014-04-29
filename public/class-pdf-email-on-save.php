@@ -506,7 +506,7 @@ class PDF_Email {
 
 		// Triggered by being on the post edit screen and there being a post ID to work with
 		$screen = get_current_screen();
-		if( 'post' === $screen->base || ! isset( $_GET['post'] ) ) {
+		if( 'post' !== $screen->base || ! isset( $_GET['post'] ) ) {
 			return;
 		}
 
