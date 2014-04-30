@@ -1,9 +1,9 @@
 === PDF Email on Save ===
-Contributors: (this should be a list of wordpress.org userids)
-Donate link: http://example.com/
-Tags: comments, spam
-Requires at least: 3.5.1
-Tested up to: 3.6
+Contributors: mjbanks, jchristopher
+Donate link: http://mattbanks.me/donate/
+Tags: pdf, email, custom post types,
+Requires at least: 3.7
+Tested up to: 3.9
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -12,7 +12,9 @@ Create a PDF for a given post, page, or custom post type when the content is sav
 
 == Description ==
 
-Create a PDF for a given post, page, or custom post type when the content is saved. Users can select which post types are included and which email to send the PDF to on the plugin settings page.
+Create a PDF for a given post, page, or custom post type when the content is saved. Users can select which post types are included and which email to send the PDF to on the plugin settings page under Settings -> PDF Email on Save.
+
+Filters are available for changing all content in the generated PDF - see FAQ for more details.
 
 == Installation ==
 
@@ -41,21 +43,22 @@ Create a PDF for a given post, page, or custom post type when the content is sav
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
+= How do I customize the PDF or email being sent? =
 
-An answer to that question.
+There are a number of filters available to change the content of the PDF or the email being sent. All standard content can be viewed in the plugin folder under `public/class-pdf-email-on-save.php`. The filters available include:
 
-= What about foo bar? =
+- Subject for email being sent: `pdf_email_on_save_subject`
+- Content of email message being sent: `pdf_email_on_save_message`
+- Filename of PDF attachement being sent: `pdf_email_on_save_filename`
+- Header of generated PDF: `pdf_email_on_save_header`
+- Content of generated PDF: `pdf_email_on_save_content`
+- Footer of generated PDF: `pdf_email_on_save_footer`
+- Combined HTML of generated PDF: `pdf_email_on_save_html`
 
-Answer to foo bar dilemma.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. Plugin settings page
 
 == Changelog ==
 
