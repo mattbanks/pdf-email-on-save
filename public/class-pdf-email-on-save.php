@@ -478,11 +478,11 @@ class PDF_Email {
 
 		// Triggered by being on the post edit screen and there being a post ID to work with
 		$screen = get_current_screen();
-		if( 'post' !== $screen->base || ! isset( $_GET['post'] ) ) {
+		if ( 'post' !== $screen->base || ! isset( $_GET['post'] ) ) {
 			return;
 		}
 
-		// Look for our postmeta breadcrumb
+		// Look for our post meta breadcrumb
 		$post_id = absint( $_GET['post'] );
 		$status = get_post_meta( $post_id, '_pdf_email_on_save_status', true );
 
@@ -495,13 +495,14 @@ class PDF_Email {
 		if ( 'success' == $status ) {
 			?>
 			<div class="updated">
-				<p><?php _e( 'PDF send by email successfully', $this->$plugin_slug ); ?></p>
+				<p><?php _e( 'PDF sent successfully by email.', self::get_plugin_slug() ); ?></p>
 			</div>
 			<?php
-		} elseif ( 'fail' == $status ) {
+		}
+		elseif ( 'fail' == $status ) {
 			?>
 			<div class="error">
-				<p><?php _e( 'Oops! Something went wrong. PDF was not sent by email.', $this->$plugin_slug ); ?></p>
+				<p><?php _e( 'Oops! Something went wrong. PDF was not sent by email.', self::get_plugin_slug() ); ?></p>
 			</div>
 			<?php
 		}
