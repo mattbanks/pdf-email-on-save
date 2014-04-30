@@ -458,10 +458,10 @@ class PDF_Email {
 				// Flag whether PDF generation and email delivery
 				if( ! empty( $pdf ) && ! empty( $email_status ) ) {
 					// looks to be all good
-					add_postmeta( $post_id, '_pdf_email_on_save_status', 'success' );
+					add_post_meta( $post_id, '_pdf_email_on_save_status', 'success' );
 				} else {
 					// something went wrong
-					add_postmeta( $post_id, '_pdf_email_on_save_status', 'fail' );
+					add_post_meta( $post_id, '_pdf_email_on_save_status', 'fail' );
 				}
 			}
 
