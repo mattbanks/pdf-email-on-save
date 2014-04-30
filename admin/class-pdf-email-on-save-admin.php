@@ -166,6 +166,8 @@ class PDF_Email_Admin {
 	 * @uses sanitize_text_field() to sanitize our text field
 	 *
 	 * @since    1.0.0
+	 *
+	 * @return	 string 	sanitized email field data
 	 */
 	public function email_address_sanitize( $input ) {
 
@@ -223,6 +225,8 @@ class PDF_Email_Admin {
 	 * @uses sanitize_key() to sanitize our array keys
 	 *
 	 * @since    1.0.0
+	 *
+	 * @return	 array	 sanitized post types array
 	 */
 	public function post_types_sanitize( $input ) {
 
