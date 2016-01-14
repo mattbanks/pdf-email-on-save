@@ -322,24 +322,24 @@ class PDF_Email {
 		// Set headers
 		$uid = md5( uniqid( time() ) );
 
-		$header = 'From: ' . $site_name . ' <' . $admin_email . '>' . "\r\n";
-		$header .= "Reply-To: " . $admin_email . "\r\n";
-		$header .= "MIME-Version: 1.0\r\n";
-		$header .= "Content-Type: multipart/mixed; boundary=\"".$uid."\"\r\n\r\n";
-		$header .= "This is a multi-part message in MIME format.\r\n";
-		$header .= "--".$uid."\r\n";
-		$header .= "Content-type:text/plain; charset=iso-8859-1\r\n";
-		$header .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
-		$header .= $message."\r\n\r\n";
-		$header .= "--".$uid."\r\n";
-		$header .= "Content-Type: application/pdf; name=\"".$filename."\"\r\n";
-		$header .= "Content-Transfer-Encoding: base64\r\n";
-		$header .= "Content-Disposition: attachment; filename=\"".$filename."\"\r\n\r\n";
-		$header .= $pdf."\r\n\r\n";
-		$header .= "--".$uid."--";
+		$header = 'From: ' . $site_name . ' <' . $admin_email . '>' . "\n";
+		$header .= "Reply-To: " . $admin_email . "\n";
+		$header .= "MIME-Version: 1.0\n";
+		$header .= "Content-Type: multipart/mixed; boundary=\"".$uid."\"\n\n";
+
+		$emessage .= "--".$uid."\n";
+		$emessage .= "Content-type:text/plain; charset=iso-8859-1\n";
+		$emessage .= "Content-Transfer-Encoding: 7bit\n\n";
+		$emessage .= $message."\n\n";
+		$emessage .= "--".$uid."\n";
+		$emessage .= "Content-Type: application/pdf; name=\"".$filename."\"\n";
+		$emessage .= "Content-Transfer-Encoding: base64\n";
+		$emessage .= "Content-Disposition: attachment; filename=\"".$filename."\"\n\n";
+		$emessage .= $pdf."\n\n";
+		$emessage .= "--".$uid."--";
 
 		// Send the email, return BOOL
-		return mail( $email_address, $subject, "", $header );
+		return mail( $email_address, $subject, $emessage, $header );
 
 	}
 
