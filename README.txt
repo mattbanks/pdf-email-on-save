@@ -4,7 +4,7 @@ Donate link: http://mattbanks.me/donate/
 Tags: pdf, email, custom post types,
 Requires at least: 3.7
 Tested up to: 4.8
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,6 +61,10 @@ There are a number of filters available to change the content of the PDF or the 
 1. Plugin settings page
 
 == Changelog ==
+
+= 1.1.0 =
+* update to mpdf 6.1.0
+* update mail function call to work better with attachments
 
 = 1.0.1 =
 * remove utf8 encoding when writing html - causes weird character encoding in emails

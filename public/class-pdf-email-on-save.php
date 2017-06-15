@@ -6,7 +6,7 @@
  * @author    Matt Banks <mjbanks@gmail.com>
  * @license   GPL-2.0+
  * @link      http://mattbanks.me
- * @copyright 2014 Matt Banks
+ * @copyright 2014-2017 Matt Banks
  */
 
 /**
@@ -24,7 +24,7 @@ class PDF_Email {
 	 *
 	 * @var     string
 	 */
-	const VERSION = '1.0.1';
+	const VERSION = '1.1.0';
 
 	/**
 	 * Unique identifier for your plugin.

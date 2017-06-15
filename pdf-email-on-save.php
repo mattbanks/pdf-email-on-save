@@ -10,13 +10,13 @@
  * @author    Matt Banks <mjbanks@gmail.com>
  * @license   GPL-2.0+
  * @link      http://mattbanks.me
- * @copyright 2014 Matt Banks
+ * @copyright 2014-2017 Matt Banks
  *
  * @wordpress-plugin
  * Plugin Name:       PDF Email On Save
  * Plugin URI:        http://mattbanks.me
  * Description:       Plugin to create a PDF for a given post, page, or custom post type when the content is saved and email it to the user.
- * Version:           1.0.1
+ * Version:           1.1.0
  * Author:            Matt Banks
  * Author URI:        http://mattbanks.me
  * Text Domain:       pdf-email-on-save-locale
