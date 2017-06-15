@@ -325,7 +325,7 @@ class PDF_Email {
 		$header = 'From: ' . $site_name . ' <' . $admin_email . '>' . "\n";
 		$header .= "Reply-To: " . $admin_email . "\n";
 		$header .= "MIME-Version: 1.0\n";
-		$header .= "Content-Type: multipart/mixed; boundary=\"".$uid."\"\n\n";
+		$header .= "Content-Type: multipart/mixed; boundary=\"".$uid."\"\n";
 
 		$emessage .= "--".$uid."\n";
 		$emessage .= "Content-type:text/plain; charset=iso-8859-1\n";
